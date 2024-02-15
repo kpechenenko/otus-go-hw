@@ -19,14 +19,11 @@ func Unpack(s string) (string, error) {
 		if i == 0 && unicode.IsDigit(c) {
 			return s, ErrInvalidString
 		}
-		if unicode.IsLetter(c) {
-			if unicode.IsLetter(prev) {
-				_, err := builder.WriteRune(prev)
-				if err != nil {
-					return s, err
-				}
+		if unicode.IsLetter(c) && unicode.IsLetter(prev) {
+			_, err := builder.WriteRune(prev)
+			if err != nil {
+				return s, err
 			}
-			prev = c
 		} else if unicode.IsDigit(c) {
 			if unicode.IsDigit(prev) {
 				return s, ErrInvalidString
@@ -36,8 +33,8 @@ func Unpack(s string) (string, error) {
 			if err != nil {
 				return s, err
 			}
-			prev = c
 		}
+		prev = c
 		if i == (len(s)-1) && unicode.IsLetter(c) {
 			_, err := builder.WriteRune(c)
 			if err != nil {
