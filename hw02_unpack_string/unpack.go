@@ -34,7 +34,7 @@ func checkString(s string) error {
 
 var ErrInvalidString = errors.New("invalid string")
 
-// Unpack распоковать сжатую стркоу в полную строку
+// Unpack распоковать сжатую стркоу в полную строку.
 func Unpack(s string) (string, error) {
 	if len(s) == 0 {
 		return s, nil
