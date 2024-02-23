@@ -1,5 +1,13 @@
 package main
 
+import (
+	"fmt"
+
+	"github.com/lukesiler/stringutil"
+)
+
 func main() {
-	// Place your code here.
+	const greeting = "Hello, OTUS!"
+	reversed := stringutil.Reverse(greeting)
+	fmt.Print(reversed)
 }

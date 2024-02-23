@@ -80,3 +80,19 @@ func TestTop10(t *testing.T) {
 		}
 	})
 }
+
+func TestTop10_9Elems(t *testing.T) {
+	s := "a b b c c c d d d d e e e e e f f f f f f g g g g g g g"
+	expected := []string{"g", "f", "e", "d", "c", "b", "a"}
+	t.Run("9 letters in reverse alphabetic orders", func(t *testing.T) {
+		require.Equal(t, expected, Top10(s))
+	})
+}
+
+func TestTop10_Only1Elems(t *testing.T) {
+	s := "a"
+	expected := []string{"a"}
+	t.Run("only 1 letter", func(t *testing.T) {
+		require.Equal(t, expected, Top10(s))
+	})
+}
