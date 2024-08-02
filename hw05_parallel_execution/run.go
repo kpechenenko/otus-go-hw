@@ -39,16 +39,21 @@ func Run(tasks []Task, n, m int) error {
 	}
 	go func() {
 		defer close(tasksCh)
-		for _, t := range tasks {
-			if maxErrCnt > 0 && errCnt.Load() >= maxErrCnt {
-				return
-			}
-			tasksCh <- t
-		}
+		generateTasksCh(tasksCh, tasks, maxErrCnt, &errCnt)
 	}()
 	wg.Wait()
 	if maxErrCnt > 0 && errCnt.Load() >= maxErrCnt {
 		return ErrErrorsLimitExceeded
 	}
 	return nil
+}
+
+// generateTasksCh записать задачи из слайса в канал, остановить запись, если возникло maxErrCnt ошибок.
+func generateTasksCh(out chan<- Task, tasks []Task, maxErrCnt int32, errCnt *atomic.Int32) {
+	for _, t := range tasks {
+		if maxErrCnt > 0 && errCnt.Load() >= maxErrCnt {
+			return
+		}
+		out <- t
+	}
 }
