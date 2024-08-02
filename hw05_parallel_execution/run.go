@@ -37,10 +37,15 @@ func Run(tasks []Task, n, m int) error {
 			}
 		}()
 	}
-	for _, t := range tasks {
-		tasksCh <- t
-	}
-	close(tasksCh)
+	go func() {
+		defer close(tasksCh)
+		for _, t := range tasks {
+			if maxErrCnt > 0 && errCnt.Load() >= maxErrCnt {
+				return
+			}
+			tasksCh <- t
+		}
+	}()
 	wg.Wait()
 	if maxErrCnt > 0 && errCnt.Load() >= maxErrCnt {
 		return ErrErrorsLimitExceeded
