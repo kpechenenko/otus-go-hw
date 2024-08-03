@@ -3,8 +3,8 @@ module github.com/kpechenenko/hw07_file_copying
 go 1.19
 
 require (
-	github.com/cheggaaa/pb/v3 v3.1.5
-	github.com/stretchr/testify v1.9.0
+	github.com/cheggaaa/pb/v3 v3.1.4
+	github.com/stretchr/testify v1.7.0
 )
 
 require (
