@@ -2,6 +2,8 @@ package main
 
 import (
 	"flag"
+	"log"
+	"os"
 )
 
 var (
@@ -18,5 +20,10 @@ func init() {
 
 func main() {
 	flag.Parse()
-	// Place your code here.
+	flag.Parse()
+	err := Copy(from, to, offset, limit)
+	if err != nil {
+		log.Printf("copying file %s to %s failed: %v", from, to, err)
+		os.Exit(1)
+	}
 }
