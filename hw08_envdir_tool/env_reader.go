@@ -19,6 +19,13 @@ type EnvValue struct {
 	NeedRemove bool
 }
 
+// NeedSetToEnv нужно ли присваивать значение в окружение?
+// У переменных, которые нужно присвоить, NeedRemove в читающей функции записывается в false.
+// Сравнивать только по v.Value != "" не совсем корректно, т.к. в value может быть пустая строка.
+func (v EnvValue) NeedSetToEnv() bool {
+	return v.Value != "" || !v.NeedRemove
+}
+
 // ReadDir reads a specified directory and returns map of env variables.
 // Variables represented as files where filename is name of variable, file first line is a value.
 func ReadDir(dir string) (Environment, error) {
