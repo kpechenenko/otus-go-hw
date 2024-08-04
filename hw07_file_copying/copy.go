@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/cheggaaa/pb/v3"
 )
@@ -13,6 +14,7 @@ var (
 	ErrOffsetExceedsFileSize = errors.New("offset exceeds file size")
 	ErrNegativeOffset        = errors.New("offset is negative")
 	ErrNegativeLimit         = errors.New("limit is negative")
+	ErrSamePath              = errors.New("paths to source and destination files are the same")
 )
 
 // Copy скопировать limit байтов из файла fromPath в файл toPath, начиная с offset байт.
@@ -22,6 +24,17 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	}
 	if limit < 0 {
 		return ErrNegativeLimit
+	}
+	fromPath, err := filepath.Abs(fromPath)
+	if err != nil {
+		return err
+	}
+	toPath, err = filepath.Abs(toPath)
+	if err != nil {
+		return err
+	}
+	if fromPath == toPath {
+		return ErrSamePath
 	}
 	f, err := os.Open(fromPath)
 	if err != nil {

@@ -18,6 +18,15 @@ func TestCopy(t *testing.T) {
 		err           error
 	}{
 		{
+			name:          "paths to source and destination files are the same",
+			fromPath:      "testdata/input.txt",
+			toPath:        "testdata/input.txt",
+			validCopyPath: "testdata/out_offset0_limit0.txt",
+			offset:        0,
+			limit:         0,
+			err:           ErrSamePath,
+		},
+		{
 			name:          "unsupported file",
 			fromPath:      "/dev/urandom",
 			toPath:        "/tmp/urandom.txt",
@@ -119,7 +128,6 @@ func TestCopy(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			defer os.Remove(tc.toPath)
 			assert.FileExists(t, tc.validCopyPath)
 			err := Copy(tc.fromPath, tc.toPath, tc.offset, tc.limit)
 			if tc.err != nil {
@@ -127,6 +135,7 @@ func TestCopy(t *testing.T) {
 				return
 			}
 			assert.FileExists(t, tc.toPath)
+			defer os.Remove(tc.toPath)
 			ok, err := filesHasSameContent(tc.toPath, tc.validCopyPath)
 			assert.NoError(t, err)
 			assert.True(t, ok)
