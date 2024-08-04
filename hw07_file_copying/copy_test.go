@@ -18,6 +18,15 @@ func TestCopy(t *testing.T) {
 		err           error
 	}{
 		{
+			name:          "path to source file is directory",
+			fromPath:      "testdata/",
+			toPath:        "testdata/input2.txt",
+			validCopyPath: "testdata/out_offset0_limit0.txt",
+			offset:        0,
+			limit:         0,
+			err:           ErrUnsupportedFile,
+		},
+		{
 			name:          "paths to source and destination files are the same",
 			fromPath:      "testdata/input.txt",
 			toPath:        "testdata/input.txt",
