@@ -1,11 +1,12 @@
 package hw10programoptimization
 
 import (
-	"encoding/json"
+	"bufio"
 	"fmt"
 	"io"
-	"regexp"
 	"strings"
+
+	"github.com/mailru/easyjson"
 )
 
 type User struct {
@@ -28,39 +29,29 @@ func GetDomainStat(r io.Reader, domain string) (DomainStat, error) {
 	return countDomains(u, domain)
 }
 
+// Номер строки из файла -> пользователь.
 type users [100_000]User
 
-func getUsers(r io.Reader) (result users, err error) {
-	content, err := io.ReadAll(r)
-	if err != nil {
-		return
-	}
-
-	lines := strings.Split(string(content), "\n")
-	for i, line := range lines {
+func getUsers(r io.Reader) (users, error) {
+	u := users{}
+	sc := bufio.NewScanner(r)
+	for i := 0; sc.Scan(); i++ {
 		var user User
-		if err = json.Unmarshal([]byte(line), &user); err != nil {
-			return
+		if err := easyjson.Unmarshal(sc.Bytes(), &user); err != nil {
+			return u, err
 		}
-		result[i] = user
+		u[i] = user
 	}
-	return
+	return u, nil
 }
 
 func countDomains(u users, domain string) (DomainStat, error) {
-	result := make(DomainStat)
-
+	stats := make(DomainStat, len(u))
 	for _, user := range u {
-		matched, err := regexp.Match("\\."+domain, []byte(user.Email))
-		if err != nil {
-			return nil, err
-		}
-
-		if matched {
-			num := result[strings.ToLower(strings.SplitN(user.Email, "@", 2)[1])]
-			num++
-			result[strings.ToLower(strings.SplitN(user.Email, "@", 2)[1])] = num
+		if strings.Contains(user.Email, domain) {
+			emailName := user.Email[strings.Index(user.Email, "@")+1:]
+			stats[strings.ToLower(emailName)]++
 		}
 	}
-	return result, nil
+	return stats, nil
 }
