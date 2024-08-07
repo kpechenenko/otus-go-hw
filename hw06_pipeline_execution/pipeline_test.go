@@ -90,4 +90,66 @@ func TestPipeline(t *testing.T) {
 		require.Len(t, result, 0)
 		require.Less(t, int64(elapsed), int64(abortDur)+int64(fault))
 	})
+
+	t.Run("empty IN channel", func(t *testing.T) {
+		in := make(Bi)
+		close(in)
+
+		result := make([]string, 0)
+		start := time.Now()
+		for s := range ExecutePipeline(in, nil, stages...) {
+			result = append(result, s.(string))
+		}
+		elapsed := time.Since(start)
+
+		require.Empty(t, result)
+		// nothing to process, must be done so quickly
+		require.Less(t,
+			int64(elapsed),
+			int64(1*time.Millisecond))
+	})
+}
+
+func TestTransferBetweenCh(t *testing.T) {
+	t.Run("transfer all data and close channel as writer", func(t *testing.T) {
+		expected := []int{1, 2, 3, 4, 5}
+		in := make(Bi)
+		go func() {
+			defer close(in)
+			for _, v := range expected {
+				in <- v
+			}
+		}()
+
+		out := make(Bi)
+		go func() {
+			transferBetweenCh(in, out, nil)
+		}()
+
+		actual := make([]int, 0, len(expected))
+		for v := range out {
+			actual = append(actual, v.(int))
+		}
+
+		require.Equal(t, expected, actual)
+	})
+
+	t.Run("nothing to transfer", func(t *testing.T) {
+		in := make(Bi)
+		go func() {
+			close(in)
+		}()
+
+		out := make(Bi)
+		go func() {
+			transferBetweenCh(in, out, nil)
+		}()
+
+		actual := make([]int, 0)
+		for v := range out {
+			actual = append(actual, v.(int))
+		}
+
+		require.Empty(t, actual)
+	})
 }
