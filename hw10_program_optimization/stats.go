@@ -49,8 +49,8 @@ func countDomains(u users, domain string) (DomainStat, error) {
 	stats := make(DomainStat, len(u))
 	for _, user := range u {
 		if strings.Contains(user.Email, domain) {
-			emailName := user.Email[strings.Index(user.Email, "@")+1:]
-			stats[strings.ToLower(emailName)]++
+			subDomain := strings.ToLower(user.Email[strings.Index(user.Email, "@")+1:])
+			stats[subDomain]++
 		}
 	}
 	return stats, nil
