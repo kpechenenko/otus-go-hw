@@ -1,20 +1,52 @@
 package main
 
-// При желании конфигурацию можно вынести в internal/config.
-// Организация конфига в main принуждает нас сужать API компонентов, использовать
-// при их конструировании только необходимые параметры, а также уменьшает вероятность циклической зависимости.
+import (
+	"gopkg.in/yaml.v3"
+	"os"
+)
+
+// Config конфигурация приложения.
 type Config struct {
-	Logger LoggerConf
-	// TODO
+	Logger  LoggerConfig  `yaml:"logger"`
+	Storage StorageConfig `yaml:"storage"`
+	Server  ServerConfig  `yaml:"server"`
 }
 
-type LoggerConf struct {
-	Level string
-	// TODO
+// LoggerConfig конфигурация логгера.
+type LoggerConfig struct {
+	Level string `yaml:"level"` // Уровень логирования.
 }
 
-func NewConfig() Config {
-	return Config{}
+// StorageConfig конфигурация хранилища.
+type StorageConfig struct {
+	UseInMemory    bool   `yaml:"user_in_memory"`   // Использовать хранилище в оперативной памяти?
+	DataSourceName string `yaml:"data_source_name"` // Строка подключения к БД постгрес.
 }
 
-// TODO
+// ServerConfig конфигурация для запуска http сервера.
+type ServerConfig struct {
+	Host string `yaml:"host"` // Адрес.
+	Port int    `yaml:"port"` // Порт.
+}
+
+func NewConfigFomFile(path string) (cfg *Config, err error) {
+	c := GetDefault()
+	yamlContent, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	err = yaml.Unmarshal(yamlContent, c)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func GetDefault() *Config {
+	c := &Config{
+		Logger:  LoggerConfig{Level: "info"},
+		Storage: StorageConfig{UseInMemory: true},
+		Server:  ServerConfig{Host: "0.0.0.0", Port: 8080},
+	}
+	return c
+}
