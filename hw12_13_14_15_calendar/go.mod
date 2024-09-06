@@ -1,6 +1,6 @@
 module github.com/kpechenenko/hw12_13_14_15_calendar/calendar
 
-go 1.19
+go 1.22
 
 require (
 	github.com/google/uuid v1.6.0
