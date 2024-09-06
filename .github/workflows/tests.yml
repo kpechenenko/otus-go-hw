@@ -7,7 +7,6 @@ on:
 
 env:
   GO111MODULE: "on"
-  GOROOT: $(go env GOROOT)
 
 jobs:
   lint:
