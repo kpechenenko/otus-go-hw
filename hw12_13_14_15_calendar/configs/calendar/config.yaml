@@ -1,0 +1,11 @@
+# пример конфигурационного файла для запуска сервиса calendar
+logger:
+  level: "info"
+
+repository:
+  useInMemory: true
+#  useInMemory: false
+#  dataSourceName: "host=localhost user=postgres password=postgres port=5432 dbname=calendar sslmode=disable"
+
+server:
+  address: ":8080"
