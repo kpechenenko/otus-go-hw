@@ -1,4 +1,3 @@
-//go:build purego || appengine || js
 // +build purego appengine js
 
 // This file contains the safe implementation of nanotime using time.Now().

@@ -1,7 +1,4 @@
-/*
-* CODE GENERATED AUTOMATICALLY WITH github.com/stretchr/testify/_codegen
-* THIS FILE MUST NOT BE EDITED BY HAND
- */
+// Code generated with github.com/stretchr/testify/_codegen; DO NOT EDIT.
 
 package assert
 
@@ -90,7 +87,24 @@ func EqualErrorf(t TestingT, theError error, errString string, msg string, args 
 	return EqualError(t, theError, errString, append([]interface{}{msg}, args...)...)
 }
 
-// EqualValuesf asserts that two objects are equal or convertable to the same types
+// EqualExportedValuesf asserts that the types of two objects are equal and their public
+// fields are also equal. This is useful for comparing structs that have private fields
+// that could potentially differ.
+//
+//	 type S struct {
+//		Exported     	int
+//		notExported   	int
+//	 }
+//	 assert.EqualExportedValuesf(t, S{1, 2}, S{1, 3}, "error message %s", "formatted") => true
+//	 assert.EqualExportedValuesf(t, S{1, 2}, S{2, 3}, "error message %s", "formatted") => false
+func EqualExportedValuesf(t TestingT, expected interface{}, actual interface{}, msg string, args ...interface{}) bool {
+	if h, ok := t.(tHelper); ok {
+		h.Helper()
+	}
+	return EqualExportedValues(t, expected, actual, append([]interface{}{msg}, args...)...)
+}
+
+// EqualValuesf asserts that two objects are equal or convertible to the same types
 // and equal.
 //
 //	assert.EqualValuesf(t, uint32(123), int32(123), "error message %s", "formatted")
@@ -153,6 +167,31 @@ func Eventuallyf(t TestingT, condition func() bool, waitFor time.Duration, tick 
 		h.Helper()
 	}
 	return Eventually(t, condition, waitFor, tick, append([]interface{}{msg}, args...)...)
+}
+
+// EventuallyWithTf asserts that given condition will be met in waitFor time,
+// periodically checking target function each tick. In contrast to Eventually,
+// it supplies a CollectT to the condition function, so that the condition
+// function can use the CollectT to call other assertions.
+// The condition is considered "met" if no errors are raised in a tick.
+// The supplied CollectT collects all errors from one tick (if there are any).
+// If the condition is not met before waitFor, the collected errors of
+// the last tick are copied to t.
+//
+//	externalValue := false
+//	go func() {
+//		time.Sleep(8*time.Second)
+//		externalValue = true
+//	}()
+//	assert.EventuallyWithTf(t, func(c *assert.CollectT, "error message %s", "formatted") {
+//		// add assertions as needed; any assertion failure will fail the current tick
+//		assert.True(c, externalValue, "expected 'externalValue' to be true")
+//	}, 1*time.Second, 10*time.Second, "external state has not changed to 'true'; still false")
+func EventuallyWithTf(t TestingT, condition func(collect *CollectT), waitFor time.Duration, tick time.Duration, msg string, args ...interface{}) bool {
+	if h, ok := t.(tHelper); ok {
+		h.Helper()
+	}
+	return EventuallyWithT(t, condition, waitFor, tick, append([]interface{}{msg}, args...)...)
 }
 
 // Exactlyf asserts that two objects are equal in value and type.
@@ -574,6 +613,16 @@ func NotErrorIsf(t TestingT, err error, target error, msg string, args ...interf
 	return NotErrorIs(t, err, target, append([]interface{}{msg}, args...)...)
 }
 
+// NotImplementsf asserts that an object does not implement the specified interface.
+//
+//	assert.NotImplementsf(t, (*MyInterface)(nil), new(MyObject), "error message %s", "formatted")
+func NotImplementsf(t TestingT, interfaceObject interface{}, object interface{}, msg string, args ...interface{}) bool {
+	if h, ok := t.(tHelper); ok {
+		h.Helper()
+	}
+	return NotImplements(t, interfaceObject, object, append([]interface{}{msg}, args...)...)
+}
+
 // NotNilf asserts that the specified object is not nil.
 //
 //	assert.NotNilf(t, err, "error message %s", "formatted")
@@ -618,10 +667,12 @@ func NotSamef(t TestingT, expected interface{}, actual interface{}, msg string, 
 	return NotSame(t, expected, actual, append([]interface{}{msg}, args...)...)
 }
 
-// NotSubsetf asserts that the specified list(array, slice...) contains not all
-// elements given in the specified subset(array, slice...).
+// NotSubsetf asserts that the specified list(array, slice...) or map does NOT
+// contain all elements given in the specified subset list(array, slice...) or
+// map.
 //
-//	assert.NotSubsetf(t, [1, 3, 4], [1, 2], "But [1, 3, 4] does not contain [1, 2]", "error message %s", "formatted")
+//	assert.NotSubsetf(t, [1, 3, 4], [1, 2], "error message %s", "formatted")
+//	assert.NotSubsetf(t, {"x": 1, "y": 2}, {"z": 3}, "error message %s", "formatted")
 func NotSubsetf(t TestingT, list interface{}, subset interface{}, msg string, args ...interface{}) bool {
 	if h, ok := t.(tHelper); ok {
 		h.Helper()
@@ -705,10 +756,11 @@ func Samef(t TestingT, expected interface{}, actual interface{}, msg string, arg
 	return Same(t, expected, actual, append([]interface{}{msg}, args...)...)
 }
 
-// Subsetf asserts that the specified list(array, slice...) contains all
-// elements given in the specified subset(array, slice...).
+// Subsetf asserts that the specified list(array, slice...) or map contains all
+// elements given in the specified subset list(array, slice...) or map.
 //
-//	assert.Subsetf(t, [1, 2, 3], [1, 2], "But [1, 2, 3] does contain [1, 2]", "error message %s", "formatted")
+//	assert.Subsetf(t, [1, 2, 3], [1, 2], "error message %s", "formatted")
+//	assert.Subsetf(t, {"x": 1, "y": 2}, {"x": 1}, "error message %s", "formatted")
 func Subsetf(t TestingT, list interface{}, subset interface{}, msg string, args ...interface{}) bool {
 	if h, ok := t.(tHelper); ok {
 		h.Helper()

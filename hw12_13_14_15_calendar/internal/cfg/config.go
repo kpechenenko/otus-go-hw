@@ -10,7 +10,8 @@ import (
 type Config struct {
 	Logger     LoggerConfig     `yaml:"logger"`
 	Repository RepositoryConfig `yaml:"repository"`
-	Server     ServerConfig     `yaml:"server"`
+	HTTPServer ServerConfig     `yaml:"httpServer"`
+	GRPCServer ServerConfig     `yaml:"grpcServer"`
 }
 
 func (c *Config) Check() error {
@@ -20,8 +21,11 @@ func (c *Config) Check() error {
 	if !c.Repository.UseInMemory && c.Repository.DataSourceName == "" {
 		return errors.New("data source name is required if in memory repository is not used")
 	}
-	if c.Server.Address == "" {
-		return errors.New("server address is required")
+	if c.HTTPServer.Address == "" {
+		return errors.New("http gateway address is required")
+	}
+	if c.GRPCServer.Address == "" {
+		return errors.New("grpc gateway address is required")
 	}
 	return nil
 }
