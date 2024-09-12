@@ -10,7 +10,7 @@ import (
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/app"
-	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/cfg"
+	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/cfg"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/logger"
 )
 

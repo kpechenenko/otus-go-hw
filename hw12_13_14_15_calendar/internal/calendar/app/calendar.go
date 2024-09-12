@@ -10,11 +10,11 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/cfg"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/gateway"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/handler"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/repository"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/calendar/service"
-	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/cfg"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/logger"
 	"github.com/kpechenenko/hw12_13_14_15_calendar/calendar/internal/middleware"
 	desc "github.com/kpechenenko/hw12_13_14_15_calendar/calendar/pkg/api/calendar"
