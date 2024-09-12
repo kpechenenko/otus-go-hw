@@ -2,6 +2,8 @@ package main
 
 import (
 	"io"
+	"log"
+	"net"
 	"time"
 )
 
@@ -13,9 +15,47 @@ type TelnetClient interface {
 }
 
 func NewTelnetClient(address string, timeout time.Duration, in io.ReadCloser, out io.Writer) TelnetClient {
-	// Place your code here.
+	return &telnetClient{
+		address: address,
+		timeout: timeout,
+		in:      in,
+		out:     out,
+	}
+}
+
+type telnetClient struct {
+	address string
+	timeout time.Duration
+	in      io.ReadCloser
+	out     io.Writer
+	conn    net.Conn
+}
+
+func (c *telnetClient) Connect() error {
+	var err error
+	if c.conn, err = net.DialTimeout("tcp", c.address, c.timeout); err != nil {
+		return err
+	}
+	log.Printf("...Connected to %s\n", c.address)
 	return nil
 }
 
-// Place your code here.
-// P.S. Author's solution takes no more than 50 lines.
+func (c *telnetClient) Close() error {
+	return c.conn.Close()
+}
+
+func (c *telnetClient) Send() error {
+	if _, err := io.Copy(c.conn, c.in); err != nil {
+		return err
+	}
+	log.Println("...EOF")
+	return nil
+}
+
+func (c *telnetClient) Receive() error {
+	if _, err := io.Copy(c.out, c.conn); err != nil {
+		return err
+	}
+	log.Printf("...Connection was close by peer")
+	return nil
+}
