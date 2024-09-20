@@ -4,6 +4,8 @@
     "title": "calendar.proto",
     "version": "version not set"
   },
+  "host": "localhost:8080",
+  "schemes": ["http"],
   "tags": [
     {
       "name": "Calendar"
