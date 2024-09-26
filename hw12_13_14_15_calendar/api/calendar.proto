@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package calendar;
+
+option go_package = "github.com/kpechenenko/hw12_13_14_15_calendar/pkg/api/calendar/;calendar";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/http.proto";
+import "google/api/annotations.proto";
+
+service Calendar {
+  rpc CreateEvent(AddEventRequest) returns (AddEventResponse) {
+    option(google.api.http) = {
+      post: "/event/create"
+      body: "*"
+    };
+  }
+  rpc UpdateEvent(UpdateEventRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      post: "/event/update"
+      body: "*"
+    };
+  }
+  rpc DeleteEvent(DeleteEventRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      post: "/event/delete"
+      body: "*"
+    };
+  }
+  rpc GetEventsForDay(GetEventsForDayRequest) returns (GetEventsResponse) {
+    option(google.api.http) = {
+      post: "/event/get/day"
+      body: "*"
+    };
+  }
+  rpc GetEventsForWeek(GetEventsForWeekRequest) returns (GetEventsResponse) {
+    option(google.api.http) = {
+      post: "/event/get/week"
+      body: "*"
+    };
+  }
+  rpc GetEventsForMonth(GetEventsForMonthRequest) returns (GetEventsResponse) {
+    option(google.api.http) = {
+      post: "/event/get/month"
+      body: "*"
+    };
+  }
+}
+
+message GetEventsForWeekRequest {
+  google.protobuf.Timestamp begin_date = 1;
+}
+
+message GetEventsForMonthRequest {
+  google.protobuf.Timestamp begin_date = 1;
+}
+
+message GetEventsForDayRequest {
+  google.protobuf.Timestamp day = 1;
+}
+
+message GetEventsResponse {
+  repeated Event items = 1;
+}
+
+message Event {
+  string id = 1;
+  string title = 2;
+  google.protobuf.Timestamp date = 3;
+  int64 duration = 4;
+  optional string description = 5;
+  int64 owner_id = 6;
+  optional int64 notify_for = 7;
+}
+
+message AddEventRequest {
+  string title = 1;
+  google.protobuf.Timestamp date = 2;
+  int64 duration = 3;
+  optional string description = 4;
+  int64 owner_id = 5;
+  optional int64 notify_for = 6;
+}
+
+message AddEventResponse {
+  string id = 1;
+}
+
+message UpdateEventRequest {
+  string id = 1;
+  string title = 2;
+  google.protobuf.Timestamp date = 3;
+  int64 duration = 4;
+  optional string description = 5;
+  optional int64 notify_for = 6;
+}
+
+message DeleteEventRequest {
+  string id = 1;
+}
+

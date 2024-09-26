@@ -15,7 +15,7 @@ type inMemory struct {
 
 func (s *inMemory) AddEvent(_ context.Context, params AddEventParams) (id model.EventID, err error) {
 	if len(params.Title) == 0 || params.Date.IsZero() || params.Duration.Abs() == 0 || params.OwnerID == 0 {
-		err = fmt.Errorf("%w: event title, date, ownerUserId must be provided", ErrInvalidParams)
+		err = fmt.Errorf("%w: event title, date, duration, ownerId must be provided", ErrInvalidParams)
 		return
 	}
 	id = GenerateEventID()
@@ -36,7 +36,7 @@ func (s *inMemory) AddEvent(_ context.Context, params AddEventParams) (id model.
 
 func (s *inMemory) UpdateEvent(_ context.Context, params UpdateEventParams) (err error) {
 	if len(params.Title) == 0 || params.Date.IsZero() || params.Duration.Abs() == 0 {
-		err = fmt.Errorf("%w: params id, title, date must be provided", ErrInvalidParams)
+		err = fmt.Errorf("%w: params id, title, date, duration must be provided", ErrInvalidParams)
 		return
 	}
 	s.mu.Lock()

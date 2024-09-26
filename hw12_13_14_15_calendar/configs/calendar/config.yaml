@@ -7,5 +7,8 @@ repository:
 #  useInMemory: false
 #  dataSourceName: "host=localhost user=postgres password=postgres port=5432 dbname=calendar sslmode=disable"
 
-server:
+httpServer:
   address: ":8080"
+
+grpcServer:
+  address: ":50051"

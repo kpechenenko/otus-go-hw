@@ -19,7 +19,7 @@ func NewPg(db *pgxpool.Pool) Repository {
 
 func (s *pgRepository) AddEvent(ctx context.Context, params AddEventParams) (id model.EventID, err error) {
 	if len(params.Title) == 0 || params.Date.IsZero() || params.Duration.Abs() == 0 || params.OwnerID == 0 {
-		err = fmt.Errorf("%w: event title, date, ownerUserId must be provided", ErrInvalidParams)
+		err = fmt.Errorf("%w: event title, date, duration, ownerId must be provided", ErrInvalidParams)
 		return
 	}
 	query := `insert into events(
@@ -59,7 +59,7 @@ func (s *pgRepository) AddEvent(ctx context.Context, params AddEventParams) (id 
 
 func (s *pgRepository) UpdateEvent(ctx context.Context, params UpdateEventParams) (err error) {
 	if len(params.Title) == 0 || params.Date.IsZero() || params.Duration.Abs() == 0 {
-		return fmt.Errorf("%w: params id, title, date must be provided", ErrInvalidParams)
+		return fmt.Errorf("%w: params id, title, date, duration must be provided", ErrInvalidParams)
 	}
 	query := `update events set 
 		title = $1, 

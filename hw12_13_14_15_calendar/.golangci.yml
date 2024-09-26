@@ -59,6 +59,8 @@ issues:
     # Ignore shadowing of err.
     - linters: [ govet ]
       text: 'declaration of "(err|ctx)"'
+  exclude-dirs:
+    - vendor
 
 run:
   build-tags:
